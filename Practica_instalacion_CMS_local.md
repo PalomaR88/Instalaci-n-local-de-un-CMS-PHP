@@ -1,0 +1,73 @@
+# Instalación local de un CMS PHP
+
+Investiga las funcionalidades y características de la última versión del CMS drupal. (https://www.drupal.org)
+
+Esta tarea consiste en instalar un CMS de tecnología PHP (drupal 7 o drupal 8) en un servidor local. Los pasos que tendrás que dar los siguientes:
+### **Tarea 1: Instalación de un servidor LAMP**
+
+**1. Crea una instancia de vagrant basado en un box debian o ubuntu**
+
+**2. Instala en esa máquina virtual toda la pila LAMP**
+
+Entrega un documentación resumida donde expliques los pasos fundamentales para realizar esta tarea.
+
+
+
+### Tarea 2: Instalación de drupal en mi servidor local
+
+**1. Configura el servidor web con virtual hosting para que el CMS sea accesible desde la dirección: www.nombrealumno-drupal.org.**
+
+**2. Crea un usuario en la base de datos para trabajar con la base de datos donde se van a guardar los datos del CMS.**
+
+**3. Descarga la versión que te parezca más oportuna de Drupal (7 o 8) y realiza la instalación.**
+
+**4. Realiza una configuración mínima de la aplicación (Cambia la plantilla, crea algún contenido, …)**
+
+**5. Instala un módulo para añadir alguna funcionalidad a drupal.**
+
+
+En este momento, muestra al profesor la aplicación funcionando en local. Entrega un documentación resumida donde expliques los pasos fundamentales para realizar esta tarea.
+
+
+
+### Tarea 3: Configuración multinodo
+
+**1. Realiza un copia de seguridad de la base de datos**
+
+**2. Crea otra máquina con vagrant, conectada con una red interna a la anterior y configura un servidor de base de datos.**
+
+**3. Crea un usuario en la base de datos para trabajar con la nueva base de datos.**
+
+**4. Restaura la copia de seguridad en el nuevo servidor de base datos.**
+
+**5. Desinstala el servidor de base de datos en el servidor principal.**
+
+**6. Realiza los cambios de configuración necesario en drupal para que la página funcione.**
+
+Entrega un documentación resumida donde expliques los pasos fundamentales para realizar esta tarea. En este momento, muestra al profesor la aplicación funcionando en local.
+
+
+
+### Tarea 4: Instalación de otro CMS PHP
+
+**1. Elige otro CMS realizado en PHP y realiza la instalación en tu infraestructura.**
+
+**2. Configura otro virtualhost y elige otro nombre en el mismo dominio.**
+
+En este momento, muestra al profesor la aplicación funcionando en local. Y describe en redmine los pasos fundamentales para realizar la tarea.
+
+
+
+### Tarea 5: Necesidad de otros servicios
+
+**1. La mayoría de los CMS tienen la posibilidad de mandar correos electrónicos (por ejemplo para notificar una nueva versión, notificar un comentario,…)**
+
+**2. Instala un servidor de correo electrónico en tu servidor. debes configurar un servidor relay de correo, para ello en el fichero /etc/postfix/main.cf, debes poner la siguiente línea:**
+
+      relayhost = babuino-smtp.gonzalonazareno.org
+
+
+**3. Configura alguno de los CMS para utilizar tu servidor de correo y realiza una prueba de funcionamiento.**
+
+Muestra al profesor algún correo enviado por tu CMS.
+
