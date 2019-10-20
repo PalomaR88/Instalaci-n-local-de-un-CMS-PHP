@@ -35,7 +35,7 @@ $ sudo apt install apache2
 
 Instalación del servidor mariaDB:
 ~~~
-$ sudo apt install mariadb-server
+$ sudo apt install mariadb-server mariadb-client
 ~~~
 
 Instalación de las librerías PHP:
@@ -185,17 +185,11 @@ En el nuevo fichero drupal.conf:
 </VirtualHost>
 ~~~
 
-Para activar la nueva configuración de Apache:
-~~~
-vagrant@servidor:/var/www$ sudo a2ensite drupal
-Enabling site drupal.
-To activate the new configuration, you need to run:
-  systemctl reload apache2
-~~~
-
 Y se reinicia el servicio:
 ~~~
 vagrant@servidor:/var/www$ sudo systemctl restart apache2.service 
+vagrant@servidor:/var/www$ sudo a2ensite drupal
+Site drupal already enabled
 ~~~
 
 Desde el navegador, continúa la instalación en 6 pasos, corrigiendo los errores que aparecerán.
@@ -203,12 +197,11 @@ Desde el navegador, continúa la instalación en 6 pasos, corrigiendo los errore
 
 **4. Realiza una configuración mínima de la aplicación (Cambia la plantilla, crea algún contenido, …)**
 
+Todos estos cambios se realizan desde el navegador de forma muy sencilla y amigable. 
 
 
 **5. Instala un módulo para añadir alguna funcionalidad a drupal.**
 
-
-En este momento, muestra al profesor la aplicación funcionando en local. Entrega un documentación resumida donde expliques los pasos fundamentales para realizar esta tarea.
 
 
 
@@ -216,15 +209,42 @@ En este momento, muestra al profesor la aplicación funcionando en local. Entreg
 
 **1. Realiza un copia de seguridad de la base de datos**
 
+Se hace la copia de la base de datos:
+~~~
+vagrant@servidor:~$ mysqldump -v --opt --events --routines --triggers --default-character-set=utf8 -u drupal -p mysqldrupal > copiadrupal_`date +%Y%m%d_%H%M%S`.sql
+~~~
+
 **2. Crea otra máquina con vagrant, conectada con una red interna a la anterior y configura un servidor de base de datos.**
+Se modifica Vagrantfile para crear un nuevo nodo con una red interna conectada con el nodo anteriormente creado. 
+
 
 **3. Crea un usuario en la base de datos para trabajar con la nueva base de datos.**
 
+Como en la primera máquina, se instala mariadb (Punto 2 de la Tarea 1 y punto 2 de la Tarea 2).
+
+
 **4. Restaura la copia de seguridad en el nuevo servidor de base datos.**
+Se pasa la copia al nuevo nodo:
+~~~
+vagrant@servidor:~$ scp copiadrupal_20191020_100152.sql vagrant@192.168.100.2:
+~~~
+
+Y se restaura la base de datos:
+~~~
+vagrant@nodo2:~$ mysql -u drupal --password=drupal mysqldrupal < copiadrupal_20191020_100152.sql
+~~~
+
 
 **5. Desinstala el servidor de base de datos en el servidor principal.**
 
+~~~
+vagrant@servidor:~$ sudo apt purge mariadb-server
+vagrant@servidor:~$ sudo apt purge mariadb-client
+~~~
+
 **6. Realiza los cambios de configuración necesario en drupal para que la página funcione.**
+
+$settings['update_free_access'] = TRUE;
 
 Entrega un documentación resumida donde expliques los pasos fundamentales para realizar esta tarea. En este momento, muestra al profesor la aplicación funcionando en local.
 
