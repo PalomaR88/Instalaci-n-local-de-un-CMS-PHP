@@ -124,25 +124,86 @@ Thanks for using MariaDB!
 
 Se crea un nuevo usuario:
 ~~~
-vagrant@servidor:/etc/apache2/sites-available$ sudo mariadb -u root
+vagrant@servidor:~$ sudo mysql -u root -p
+Enter password: 
 Welcome to the MariaDB monitor.  Commands end with ; or \g.
-Your MariaDB connection id is 59
+Your MariaDB connection id is 45
 Server version: 10.3.17-MariaDB-0+deb10u1 Debian 10
 
 Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
 
 Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 
-MariaDB [(none)]> grant all privileges on *.* to 'paloma'@'localhost' identified by 'paloma' with grant option;
+MariaDB [(none)]> create database mysqldrupal
+    -> ;
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [(none)]> create user drupal;
 Query OK, 0 rows affected (0.001 sec)
+
+MariaDB [(none)]> grant all on mysqldrupal.* to drupal identified by 'drupal'
+    -> ;
+Query OK, 0 rows affected (0.002 sec)
+
 ~~~
 
 
 **3. Descarga la versión que te parezca más oportuna de Drupal (7 o 8) y realiza la instalación.**
 
+Se descarga drupal:
+~~~
+vagrant@servidor:~$ cd /var/www/
+vagrant@servidor:~$ sudo wget https://www.drupal.org/download-latest/zip
+~~~
+
+Y se descomprime:
+~~~
+vagrant@servidor:~$ sudo apt install unzip
+vagrant@servidor:~$ sudo unzip zip
+~~~
+
+Se configura Apache2:
+~~~
+vagrant@servidor:/var/www$ sudo cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/drupal.conf
+~~~
+
+En el nuevo fichero drupal.conf:
+~~~
+<VirtualHost *:80>
+        ServerAdmin admin@example.com
+        DocumentRoot /var/www/drupal
+        ServerName 192.168.43.38
+        ServerAlias www.paloma-drupal.com
+        <Directory "/var/www/drupal/">
+                Options FollowSymLinks
+                AllowOverride All
+                Order allow,deny
+                allow from all
+        </Directory>
+                ErrorLog /var/log/apache2/drupal-error_log
+                CustomLog /var/log/apache2/drupal-access_log common
+</VirtualHost>
+~~~
+
+Para activar la nueva configuración de Apache:
+~~~
+vagrant@servidor:/var/www$ sudo a2ensite drupal
+Enabling site drupal.
+To activate the new configuration, you need to run:
+  systemctl reload apache2
+~~~
+
+Y se reinicia el servicio:
+~~~
+vagrant@servidor:/var/www$ sudo systemctl restart apache2.service 
+~~~
+
+Desde el navegador, continúa la instalación en 6 pasos, corrigiendo los errores que aparecerán.
 
 
 **4. Realiza una configuración mínima de la aplicación (Cambia la plantilla, crea algún contenido, …)**
+
+
 
 **5. Instala un módulo para añadir alguna funcionalidad a drupal.**
 
