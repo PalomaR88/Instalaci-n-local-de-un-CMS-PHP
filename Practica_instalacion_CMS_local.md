@@ -253,8 +253,108 @@ Entrega un documentación resumida donde expliques los pasos fundamentales para 
 ### Tarea 4: Instalación de otro CMS PHP
 
 **1. Elige otro CMS realizado en PHP y realiza la instalación en tu infraestructura.**
+~~~
+wget https://downloads.joomla.org/cms/joomla3/3-9-12/Joomla_3-9-12-Stable-Full_Package.zip
+unzip Joomla_3-9-12-Stable-Full_Package.zip 
+~~~
+~~~
+sudo cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/joomla.conf
+~~~
+~~~
+<VirtualHost *:80>
+        ServerAdmin admin@example.com
+        DocumentRoot /var/www/joomla
+        ServerName 192.168.43.247
+        ServerAlias www.paloma-joomla.org
+        <Directory "/var/www/joomla/">
+                Options FollowSymLinks
+                AllowOverride All
+                Order allow,deny
+                allow from all
+        </Directory>
+                ErrorLog /var/log/apache2/drupal-error_log
+                CustomLog /var/log/apache2/drupal-access_log common
+</VirtualHost>
+~~~
+~~~
+sudo a2ensite joomla
+~~~
+
+Se crea un nuevo fichero en el directorio raíz con el nombre configuration.php y se pega lo siguiente:
+~~~
+<?php
+class JConfig {
+	public $offline = '0';
+	public $offline_message = 'Este sitio está cerrado por tareas de mantenimiento.<br />Por favor, inténtelo nuevamente más tarde.';
+	public $display_offline_message = '1';
+	public $offline_image = '';
+	public $sitename = 'paloma-joomla';
+	public $editor = 'tinymce';
+	public $captcha = '0';
+	public $list_limit = '20';
+	public $access = '1';
+	public $debug = '0';
+	public $debug_lang = '0';
+	public $debug_lang_const = '1';
+	public $dbtype = 'mysqli';
+	public $host = 'localhost';
+	public $user = 'joomla';
+	public $password = 'joomla';
+	public $db = 'mysqljoomla';
+	public $dbprefix = 'mudb4_';
+	public $live_site = '';
+	public $secret = 'HP5P4pS1Ypuarjmv';
+	public $gzip = '0';
+	public $error_reporting = 'default';
+	public $helpurl = 'https://help.joomla.org/proxy?keyref=Help{major}{minor}:{keyref}&lang={langcode}';
+	public $ftp_host = 'localhost';
+	public $ftp_port = '21';
+	public $ftp_user = '';
+	public $ftp_pass = '';
+	public $ftp_root = '';
+	public $ftp_enable = '0';
+	public $offset = 'UTC';
+	public $mailonline = '1';
+	public $mailer = 'mail';
+	public $mailfrom = 'palomagarciacampon08@gmail.com';
+	public $fromname = 'paloma-joomla';
+	public $sendmail = '/usr/sbin/sendmail';
+	public $smtpauth = '0';
+	public $smtpuser = '';
+	public $smtppass = '';
+	public $smtphost = 'localhost';
+	public $smtpsecure = 'none';
+	public $smtpport = '25';
+	public $caching = '0';
+	public $cache_handler = 'file';
+	public $cachetime = '15';
+	public $cache_platformprefix = '0';
+	public $MetaDesc = '';
+	public $MetaKeys = '';
+	public $MetaTitle = '1';
+	public $MetaAuthor = '1';
+	public $MetaVersion = '0';
+	public $robots = '';
+	public $sef = '1';
+	public $sef_rewrite = '0';
+	public $sef_suffix = '0';
+	public $unicodeslugs = '0';
+	public $feed_limit = '10';
+	public $feed_email = 'none';
+	public $log_path = '/var/www/joomla/administrator/logs';
+	public $tmp_path = '/var/www/joomla/tmp';
+	public $lifetime = '15';
+	public $session_handler = 'database';
+	public $shared_session = '0';
+}
+~~~
+
 
 **2. Configura otro virtualhost y elige otro nombre en el mismo dominio.**
+~~~
+192.168.43.127  www.paloma-drupal.org
+192.168.43.127  www.paloma-joomla.org
+~~~
 
 En este momento, muestra al profesor la aplicación funcionando en local. Y describe en redmine los pasos fundamentales para realizar la tarea.
 
@@ -262,14 +362,31 @@ En este momento, muestra al profesor la aplicación funcionando en local. Y desc
 
 ### Tarea 5: Necesidad de otros servicios
 
-**1. La mayoría de los CMS tienen la posibilidad de mandar correos electrónicos (por ejemplo para notificar una nueva versión, notificar un comentario,…)**
+> La mayoría de los CMS tienen la posibilidad de mandar correos electrónicos (por ejemplo para notificar una nueva versión, notificar un comentario,…) 
 
-**2. Instala un servidor de correo electrónico en tu servidor. debes configurar un servidor relay de correo, para ello en el fichero /etc/postfix/main.cf, debes poner la siguiente línea:**
+**1. Instala un servidor de correo electrónico en tu servidor. debes configurar un servidor relay de correo, para ello en el fichero /etc/postfix/main.cf, debes poner la siguiente línea:**
 
       relayhost = babuino-smtp.gonzalonazareno.org
 
+~~~
+sudo apt-get install postfix postfix-doc
+~~~
 
-**3. Configura alguno de los CMS para utilizar tu servidor de correo y realiza una prueba de funcionamiento.**
+Configuracion /etc/aliases:
+~~~
+# See man 5 aliases for format
+postmaster:    root
+root: vagrant
+~~~
+
+Se actualiza la configuración anterior:
+~~~
+vagrant@nodo2:~$ sudo newaliases
+~~~
+
+
+
+**2. Configura alguno de los CMS para utilizar tu servidor de correo y realiza una prueba de funcionamiento.**
 
 Muestra al profesor algún correo enviado por tu CMS.
 
