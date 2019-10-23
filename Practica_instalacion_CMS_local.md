@@ -172,8 +172,7 @@ En el nuevo fichero drupal.conf:
 <VirtualHost *:80>
         ServerAdmin admin@example.com
         DocumentRoot /var/www/drupal
-        ServerName 192.168.43.38
-        ServerAlias www.paloma-drupal.com
+        ServerName www.paloma-drupal.org
         <Directory "/var/www/drupal/">
                 Options FollowSymLinks
                 AllowOverride All
@@ -224,29 +223,39 @@ Como en la primera máquina, se instala mariadb (Punto 2 de la Tarea 1 y punto 2
 
 
 **4. Restaura la copia de seguridad en el nuevo servidor de base datos.**
-Se pasa la copia al nuevo nodo:
-~~~
-vagrant@servidor:~$ scp copiadrupal_20191020_100152.sql vagrant@192.168.100.2:
-~~~
-
-Y se restaura la base de datos:
+Se restaura la base de datos:
 ~~~
 vagrant@nodo2:~$ mysql -u drupal --password=drupal mysqldrupal < copiadrupal_20191020_100152.sql
 ~~~
+
+Y se configura la base de datos para que se pueda acceder a ella de forma remota modificando el fichero /etc/mysql/mariadb.conf.d/50-server.cnf:
+~~~
+bind-address            = 0.0.0.0
+~~~
+
 
 
 **5. Desinstala el servidor de base de datos en el servidor principal.**
 
 ~~~
-vagrant@servidor:~$ sudo apt purge mariadb-server
-vagrant@servidor:~$ sudo apt purge mariadb-client
+vagrant@servidor:/var/www$ sudo apt purge mariadb-*
 ~~~
 
 **6. Realiza los cambios de configuración necesario en drupal para que la página funcione.**
 
-$settings['update_free_access'] = TRUE;
-
-Entrega un documentación resumida donde expliques los pasos fundamentales para realizar esta tarea. En este momento, muestra al profesor la aplicación funcionando en local.
+En el fichero setting.php:
+~~~
+$databases['default']['default'] = array (
+  'database' => 'mysqldrupal',
+  'username' => 'drupal',
+  'password' => 'drupal',
+  'prefix' => '',
+  'host' => '192.168.100.2',
+  'port' => '3306',
+  'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
+  'driver' => 'mysql',
+);
+~~~
 
 
 
