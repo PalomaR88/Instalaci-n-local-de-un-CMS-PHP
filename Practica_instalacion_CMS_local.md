@@ -200,7 +200,7 @@ Todos estos cambios se realizan desde el navegador de forma muy sencilla y amiga
 
 
 **5. Instala un módulo para añadir alguna funcionalidad a drupal.**
-
+Se ha añadido el módulo foro.
 
 
 
@@ -265,16 +265,17 @@ $databases['default']['default'] = array (
 ~~~
 wget https://downloads.joomla.org/cms/joomla3/3-9-12/Joomla_3-9-12-Stable-Full_Package.zip
 unzip Joomla_3-9-12-Stable-Full_Package.zip 
+vagrant@servidor:~$ sudo mv joomla/ /var/www/joomla
+vagrant@servidor:/var/www$ sudo chown -R www-data:www-data joomla/
 ~~~
 ~~~
-sudo cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/joomla.conf
+vagrant@servidor:~$ sudo cp /etc/apache2/sites-available/drupal.conf /etc/apache2/sites-available/joomla.conf
 ~~~
 ~~~
 <VirtualHost *:80>
         ServerAdmin admin@example.com
         DocumentRoot /var/www/joomla
-        ServerName 192.168.43.247
-        ServerAlias www.paloma-joomla.org
+        ServerName www.paloma-joomla.org
         <Directory "/var/www/joomla/">
                 Options FollowSymLinks
                 AllowOverride All
@@ -286,77 +287,39 @@ sudo cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-availab
 </VirtualHost>
 ~~~
 ~~~
-sudo a2ensite joomla
+vagrant@servidor:/var/www$ sudo a2ensite joomla
+Enabling site joomla.
+To activate the new configuration, you need to run:
+  systemctl reload apache2
+vagrant@servidor:/var/www$ sudo systemctl reload apache2.service 
 ~~~
 
-Se crea un nuevo fichero en el directorio raíz con el nombre configuration.php y se pega lo siguiente:
+Se crea la base de datos para joomña:
 ~~~
-<?php
-class JConfig {
-	public $offline = '0';
-	public $offline_message = 'Este sitio está cerrado por tareas de mantenimiento.<br />Por favor, inténtelo nuevamente más tarde.';
-	public $display_offline_message = '1';
-	public $offline_image = '';
-	public $sitename = 'paloma-joomla';
-	public $editor = 'tinymce';
-	public $captcha = '0';
-	public $list_limit = '20';
-	public $access = '1';
-	public $debug = '0';
-	public $debug_lang = '0';
-	public $debug_lang_const = '1';
-	public $dbtype = 'mysqli';
-	public $host = 'localhost';
-	public $user = 'joomla';
-	public $password = 'joomla';
-	public $db = 'mysqljoomla';
-	public $dbprefix = 'mudb4_';
-	public $live_site = '';
-	public $secret = 'HP5P4pS1Ypuarjmv';
-	public $gzip = '0';
-	public $error_reporting = 'default';
-	public $helpurl = 'https://help.joomla.org/proxy?keyref=Help{major}{minor}:{keyref}&lang={langcode}';
-	public $ftp_host = 'localhost';
-	public $ftp_port = '21';
-	public $ftp_user = '';
-	public $ftp_pass = '';
-	public $ftp_root = '';
-	public $ftp_enable = '0';
-	public $offset = 'UTC';
-	public $mailonline = '1';
-	public $mailer = 'mail';
-	public $mailfrom = 'palomagarciacampon08@gmail.com';
-	public $fromname = 'paloma-joomla';
-	public $sendmail = '/usr/sbin/sendmail';
-	public $smtpauth = '0';
-	public $smtpuser = '';
-	public $smtppass = '';
-	public $smtphost = 'localhost';
-	public $smtpsecure = 'none';
-	public $smtpport = '25';
-	public $caching = '0';
-	public $cache_handler = 'file';
-	public $cachetime = '15';
-	public $cache_platformprefix = '0';
-	public $MetaDesc = '';
-	public $MetaKeys = '';
-	public $MetaTitle = '1';
-	public $MetaAuthor = '1';
-	public $MetaVersion = '0';
-	public $robots = '';
-	public $sef = '1';
-	public $sef_rewrite = '0';
-	public $sef_suffix = '0';
-	public $unicodeslugs = '0';
-	public $feed_limit = '10';
-	public $feed_email = 'none';
-	public $log_path = '/var/www/joomla/administrator/logs';
-	public $tmp_path = '/var/www/joomla/tmp';
-	public $lifetime = '15';
-	public $session_handler = 'database';
-	public $shared_session = '0';
-}
+vagrant@servidor:~$ sudo mysql -u root -p
+Enter password: 
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 45
+Server version: 10.3.17-MariaDB-0+deb10u1 Debian 10
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> create database mysqljoomla
+    -> ;
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [(none)]> create user joomla;
+Query OK, 0 rows affected (0.001 sec)
+
+MariaDB [(none)]> grant all on mysqjoomla.* to joomla identified by 'joomla'
+    -> ;
+Query OK, 0 rows affected (0.002 sec)
 ~~~
+
+Por último, el isntalador pedirá que se elimine el cirectorio "installation".
+
 
 
 **2. Configura otro virtualhost y elige otro nombre en el mismo dominio.**
@@ -365,7 +328,6 @@ class JConfig {
 192.168.43.127  www.paloma-joomla.org
 ~~~
 
-En este momento, muestra al profesor la aplicación funcionando en local. Y describe en redmine los pasos fundamentales para realizar la tarea.
 
 
 
@@ -378,20 +340,37 @@ En este momento, muestra al profesor la aplicación funcionando en local. Y desc
       relayhost = babuino-smtp.gonzalonazareno.org
 
 ~~~
-sudo apt-get install postfix postfix-doc
+vagrant@servidor:/var/www/joomla$ sudo apt update
+vagrant@servidor:/var/www/joomla$ sudo apt install postfix postfix-doc
 ~~~
 
-Configuracion /etc/aliases:
+Se configura el fichero /etc/postfix/main.cf:
 ~~~
-# See man 5 aliases for format
-postmaster:    root
-root: vagrant
+smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
+myhostname = servidor.gonzalonazareno.org.
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+myorigin = /etc/mailname
+mydestination = $myhostname, gonzalonazareno.org, localhost.localdomain, localhost
+relayhost = babuino-smtp.gonzalonazareno.org
+mynetworks = 172.0.0.0/8, 0.0.0.0
+mailbox_size_limit = 0
+recipient_delimiter = +
+inet_interfaces = all
+inet_protocols = ipv4
+html_directory = /usr/share/doc/postfix/html
+
 ~~~
 
-Se actualiza la configuración anterior:
+Y se inicia:
 ~~~
-vagrant@nodo2:~$ sudo newaliases
+vagrant@servidor:/var/www/joomla$ sudo systemctl start postfix
+Failed to start postfix.service: Unit postfix.service is masked.
+vagrant@servidor:/var/www/joomla$ sudo systemctl unmask postfix
+Removed /etc/systemd/system/postfix.service.
+vagrant@servidor:/var/www/joomla$ sudo systemctl start postfix
 ~~~
+
 
 
 
