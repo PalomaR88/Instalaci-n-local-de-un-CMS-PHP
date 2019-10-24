@@ -7,6 +7,7 @@ Vagrant.configure("2") do |config|
     lamp.vm.box = "debian/buster64"
     lamp.vm.hostname = "servidor"
     lamp.vm.network :public_network,:bridge=>"wlp1s0"
+    #lamp.vm.network :public_network,:bridge=>"tun0"
     lamp.vm.network :private_network, ip: "192.168.100.1", virtualbox__intnet:"redmysql"
   end
 

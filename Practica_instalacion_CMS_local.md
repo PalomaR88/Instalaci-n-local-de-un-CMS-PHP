@@ -341,40 +341,91 @@ Por último, el isntalador pedirá que se elimine el cirectorio "installation".
 
 ~~~
 vagrant@servidor:/var/www/joomla$ sudo apt update
-vagrant@servidor:/var/www/joomla$ sudo apt install postfix postfix-doc
+vagrant@servidor:/var/www/joomla$ sudo apt install postfix
+~~~
+
+Se selecciona Internet Site y se elige el nombre del correo:
+~~~
+ ┌──────────────────────┤ Postfix Configuration ├──────────────────────┐
+ │ Please select the mail server configuration type that best meets    │ 
+ │ your needs.                                                         │ 
+ │                                                                     │ 
+ │  No configuration:                                                  │ 
+ │   Should be chosen to leave the current configuration unchanged.    │ 
+ │  Internet site:                                                     │ 
+ │   Mail is sent and received directly using SMTP.                    │ 
+ │  Internet with smarthost:                                           │ 
+ │   Mail is received directly using SMTP or by running a utility      │ 
+ │ such                                                                │ 
+ │   as fetchmail. Outgoing mail is sent using a smarthost.            │ 
+ │  Satellite system:                                                  │ 
+ │   All mail is sent to another machine, called a 'smarthost', for    │ 
+ │ delivery.                                                           │ 
+ │  Local only:                                                        │ 
+ │   The only delivered mail is the mail for local users. There is no  │ 
+ │ network.                                                            │ 
+ │                                                                     │ 
+ │ General type of mail configuration:                                 │ 
+ │                                                                     │ 
+ │                      No configuration                               │ 
+ │                      Internet Site                                  │ 
+ │                      Internet with smarthost                        │ 
+ │                      Satellite system                               │ 
+ │                      Local only                                     │ 
+ │                                                                     │ 
+ │                                                                     │ 
+ │                  <Ok>                      <Cancel>                 │ 
+ │                                                                     │ 
+ └─────────────────────────────────────────────────────────────────────┘ 
+
+ ┌──────────────────────┤ Postfix Configuration ├──────────────────────┐
+ │ The "mail name" is the domain name used to "qualify" _ALL_ mail     │ 
+ │ addresses without a domain name. This includes mail to and from     │ 
+ │ <root>: please do not make your machine send out mail from          │ 
+ │ root@example.org unless root@example.org has told you to.           │ 
+ │                                                                     │ 
+ │ This name will also be used by other programs. It should be the     │ 
+ │ single, fully qualified domain name (FQDN).                         │ 
+ │                                                                     │ 
+ │ Thus, if a mail address on the local host is foo@example.org, the   │ 
+ │ correct value for this option would be example.org.                 │ 
+ │                                                                     │ 
+ │ System mail name:                                                   │ 
+ │                                                                     │ 
+ │ paloma.gonzalonazareno.org_________________________________________ │ 
+ │                                                                     │ 
+ │                  <Ok>                      <Cancel>                 │ 
+ │                                                                     │ 
+ └─────────────────────────────────────────────────────────────────────┘ 
 ~~~
 
 Se configura el fichero /etc/postfix/main.cf:
 ~~~
-smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
-myhostname = servidor.gonzalonazareno.org.
+smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated de$
+myhostname = servidor
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
 myorigin = /etc/mailname
-mydestination = $myhostname, gonzalonazareno.org, localhost.localdomain, localhost
-relayhost = babuino-smtp.gonzalonazareno.org
-mynetworks = 172.0.0.0/8, 0.0.0.0
+mydestination = $myhostname, paloma.gonzalonazareno.org, servidor, localh$
+relayhost =  babuino-smtp.gonzalonazareno.org
+mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
 mailbox_size_limit = 0
 recipient_delimiter = +
 inet_interfaces = all
-inet_protocols = ipv4
-html_directory = /usr/share/doc/postfix/html
-
+inet_protocols = all
 ~~~
 
 Y se inicia:
 ~~~
 vagrant@servidor:/var/www/joomla$ sudo systemctl start postfix
-Failed to start postfix.service: Unit postfix.service is masked.
-vagrant@servidor:/var/www/joomla$ sudo systemctl unmask postfix
-Removed /etc/systemd/system/postfix.service.
-vagrant@servidor:/var/www/joomla$ sudo systemctl start postfix
+vagrant@servidor:~$ mailq 
+Mail queue is empty
 ~~~
 
 
-
-
 **2. Configura alguno de los CMS para utilizar tu servidor de correo y realiza una prueba de funcionamiento.**
+
+En drupal se configura el correo en Configuration>People>Accont setting se añade el nuevo correo en Notification email address.
 
 Muestra al profesor algún correo enviado por tu CMS.
 
