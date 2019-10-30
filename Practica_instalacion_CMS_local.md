@@ -426,6 +426,6 @@ Mail queue is empty
 **2. Configura alguno de los CMS para utilizar tu servidor de correo y realiza una prueba de funcionamiento.**
 
 En drupal se configura el correo en Configuration>People>Accont setting se añade el nuevo correo en Notification email address.
+![Imagen5](Img_5.2.png)
 
-Muestra al profesor algún correo enviado por tu CMS.
 
