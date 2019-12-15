@@ -4,9 +4,9 @@
 
 Esta tarea consiste en instalar un CMS de tecnología PHP (drupal 7 o drupal 8) en un servidor local. Los pasos que tendrás que dar los siguientes:
 
-### **Tarea 1: Instalación de un servidor LAMP**
+## **Tarea 1: Instalación de un servidor LAMP**
 
-**1. Crea una instancia de vagrant basado en un box debian o ubuntu**
+#### 1. Crea una instancia de vagrant basado en un box debian o ubuntu
 
 ~~~
 $ vagrant init
@@ -20,7 +20,7 @@ $ vagrant up
 ~~~
 
 
-**2. Instala en esa máquina virtual toda la pila LAMP**
+#### 2. Instala en esa máquina virtual toda la pila LAMP
 
 Actualiza la nueva máquina. 
 ~~~
@@ -45,9 +45,9 @@ $ sudo apt install php7.3 php7.3-mysql libapache2-mod-php php-gd php-mysql php-x
 
 
 
-### Tarea 2: Instalación de drupal en mi servidor local
+## Tarea 2: Instalación de drupal en mi servidor local
 
-**1. Configura el servidor web con virtual hosting para que el CMS sea accesible desde la dirección: www.nombrealumno-drupal.org.**
+#### 1. Configura el servidor web con virtual hosting para que el CMS sea accesible desde la dirección: www.nombrealumno-drupal.org.
 
 Se añade en /etc/hosts del anfitrion la siguiente línea:
 ~~~
@@ -55,7 +55,7 @@ Se añade en /etc/hosts del anfitrion la siguiente línea:
 ~~~
 
 
-**2. Crea un usuario en la base de datos para trabajar con la base de datos donde se van a guardar los datos del CMS.**
+#### 2. Crea un usuario en la base de datos para trabajar con la base de datos donde se van a guardar los datos del CMS.
 
 Se configura el usuario root:
 ~~~
@@ -148,7 +148,7 @@ Query OK, 0 rows affected (0.002 sec)
 ~~~
 
 
-**3. Descarga la versión que te parezca más oportuna de Drupal (7 o 8) y realiza la instalación.**
+#### 3. Descarga la versión que te parezca más oportuna de Drupal (7 o 8) y realiza la instalación.
 
 Se descarga drupal:
 ~~~
@@ -194,35 +194,35 @@ Site drupal already enabled
 Desde el navegador, continúa la instalación en 6 pasos, corrigiendo los errores que aparecerán.
 
 
-**4. Realiza una configuración mínima de la aplicación (Cambia la plantilla, crea algún contenido, …)**
+#### 4. Realiza una configuración mínima de la aplicación (Cambia la plantilla, crea algún contenido, …)
 
 Todos estos cambios se realizan desde el navegador de forma muy sencilla y amigable. 
 
 
-**5. Instala un módulo para añadir alguna funcionalidad a drupal.**
+#### 5. Instala un módulo para añadir alguna funcionalidad a drupal.
 Se ha añadido el módulo foro.
 
 
 
-### Tarea 3: Configuración multinodo
+## Tarea 3: Configuración multinodo
 
-**1. Realiza un copia de seguridad de la base de datos**
+#### 1. Realiza un copia de seguridad de la base de datos
 
 Se hace la copia de la base de datos:
 ~~~
 vagrant@servidor:~$ mysqldump -v --opt --events --routines --triggers --default-character-set=utf8 -u drupal -p mysqldrupal > copiadrupal_`date +%Y%m%d_%H%M%S`.sql
 ~~~
 
-**2. Crea otra máquina con vagrant, conectada con una red interna a la anterior y configura un servidor de base de datos.**
+#### 2. Crea otra máquina con vagrant, conectada con una red interna a la anterior y configura un servidor de base de datos.
 Se modifica Vagrantfile para crear un nuevo nodo con una red interna conectada con el nodo anteriormente creado. 
 
 
-**3. Crea un usuario en la base de datos para trabajar con la nueva base de datos.**
+#### 3. Crea un usuario en la base de datos para trabajar con la nueva base de datos.
 
 Como en la primera máquina, se instala mariadb (Punto 2 de la Tarea 1 y punto 2 de la Tarea 2).
 
 
-**4. Restaura la copia de seguridad en el nuevo servidor de base datos.**
+#### 4. Restaura la copia de seguridad en el nuevo servidor de base datos.
 Se restaura la base de datos:
 ~~~
 vagrant@nodo2:~$ mysql -u drupal --password=drupal mysqldrupal < copiadrupal_20191020_100152.sql
@@ -235,13 +235,13 @@ bind-address            = 0.0.0.0
 
 
 
-**5. Desinstala el servidor de base de datos en el servidor principal.**
+#### 5. Desinstala el servidor de base de datos en el servidor principal.
 
 ~~~
 vagrant@servidor:/var/www$ sudo apt purge mariadb-*
 ~~~
 
-**6. Realiza los cambios de configuración necesario en drupal para que la página funcione.**
+#### 6. Realiza los cambios de configuración necesario en drupal para que la página funcione.
 
 En el fichero setting.php:
 ~~~
@@ -259,9 +259,9 @@ $databases['default']['default'] = array (
 
 
 
-### Tarea 4: Instalación de otro CMS PHP
+## Tarea 4: Instalación de otro CMS PHP
 
-**1. Elige otro CMS realizado en PHP y realiza la instalación en tu infraestructura.**
+#### 1. Elige otro CMS realizado en PHP y realiza la instalación en tu infraestructura.
 ~~~
 wget https://downloads.joomla.org/cms/joomla3/3-9-12/Joomla_3-9-12-Stable-Full_Package.zip
 unzip Joomla_3-9-12-Stable-Full_Package.zip 
@@ -322,7 +322,7 @@ Por último, el isntalador pedirá que se elimine el cirectorio "installation".
 
 
 
-**2. Configura otro virtualhost y elige otro nombre en el mismo dominio.**
+#### 2. Configura otro virtualhost y elige otro nombre en el mismo dominio.
 ~~~
 192.168.43.127  www.paloma-drupal.org
 192.168.43.127  www.paloma-joomla.org
@@ -331,11 +331,11 @@ Por último, el isntalador pedirá que se elimine el cirectorio "installation".
 
 
 
-### Tarea 5: Necesidad de otros servicios
+## Tarea 5: Necesidad de otros servicios
 
 > La mayoría de los CMS tienen la posibilidad de mandar correos electrónicos (por ejemplo para notificar una nueva versión, notificar un comentario,…) 
 
-**1. Instala un servidor de correo electrónico en tu servidor. debes configurar un servidor relay de correo, para ello en el fichero /etc/postfix/main.cf, debes poner la siguiente línea:**
+#### 1. Instala un servidor de correo electrónico en tu servidor. debes configurar un servidor relay de correo, para ello en el fichero /etc/postfix/main.cf, debes poner la siguiente línea:
 
       relayhost = babuino-smtp.gonzalonazareno.org
 
@@ -423,7 +423,7 @@ Mail queue is empty
 ~~~
 
 
-**2. Configura alguno de los CMS para utilizar tu servidor de correo y realiza una prueba de funcionamiento.**
+#### 2. Configura alguno de los CMS para utilizar tu servidor de correo y realiza una prueba de funcionamiento.
 
 En drupal se configura el correo en Configuration>People>Accont setting se añade el nuevo correo en Notification email address.
 ![Imagen5](Img_5.2.png)
